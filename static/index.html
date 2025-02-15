@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Predicción de Muertes por Demencia</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+    form { max-width: 500px; margin: auto; }
+    label { display: block; margin: 10px 0 5px; }
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+    input[readonly] { background-color: #f0f0f0; }
+    button { padding: 10px 20px; }
+    .result { margin-top: 20px; font-size: 1.2em; }
+    h2 { font-size: 1em; font-weight: normal; color: #666; margin-top: 0; }
+  </style>
+</head>
+<body>
+  <h1>Predicción de Muertes por Demencia</h1>
+  <h2>Esta API permite predecir muertes por demencia en diferentes países de Europa</h2>
+  <form id="predictForm">
+    <label for="Country">País:</label>
+    <input type="text" id="Country" name="Country" required>
+    
+    <label for="Year">Año:</label>
+    <input type="number" id="Year" name="Year" required>
+    
+    <label for="Annual_Mean_NO2_Concentration">Concentración Media Anual de NO2:</label>
+    <input type="number" step="any" id="Annual_Mean_NO2_Concentration" name="Annual_Mean_NO2_Concentration" required>
+    
+    <label for="life_expectancy">Esperanza de Vida:</label>
+    <input type="number" step="any" id="life_expectancy" name="life_expectancy" required>
+    
+    <label for="Avg_Percentage_Activity">Porcentaje Promedio de Actividad:</label>
+    <input type="number" step="any" id="Avg_Percentage_Activity" name="Avg_Percentage_Activity" required>
+    
+    <label for="Ratio_annual_of_inequality_income">Ratio Anual de Desigualdad de Ingresos:</label>
+    <input type="number" step="any" id="Ratio_annual_of_inequality_income" name="Ratio_annual_of_inequality_income" required>
+    
+    <label for="percentage_of_overweight_BMI">Porcentaje de Sobrepeso (BMI):</label>
+    <input type="number" step="any" id="percentage_of_overweight_BMI" name="percentage_of_overweight_BMI" required>
+    
+    <label for="sex_Males">Sexo (0: Female, 1: Male):</label>
+    <input type="number" id="sex_Males" name="sex_Males" min="0" max="1" required>
+    
+    <label for="Interaction_LifeExpectancy_Activity">Interacción (Esperanza de Vida * Actividad):</label>
+    <input type="number" step="any" id="Interaction_LifeExpectancy_Activity" name="Interaction_LifeExpectancy_Activity" readonly>
+    
+    <button type="submit">Predecir</button>
+  </form>
+  
+  <div class="result" id="result"></div>
+  
+  <script>
+    // Función para actualizar el campo de interacción
+    function updateInteraction() {
+      const life = parseFloat(document.getElementById("life_expectancy").value) || 0;
+      const activity = parseFloat(document.getElementById("Avg_Percentage_Activity").value) || 0;
+      const interaction = life * activity;
+      document.getElementById("Interaction_LifeExpectancy_Activity").value = interaction;
+    }
+    
+    // Actualiza la interacción cuando se cambien los valores de "life_expectancy" o "Avg_Percentage_Activity"
+    document.getElementById("life_expectancy").addEventListener("input", updateInteraction);
+    document.getElementById("Avg_Percentage_Activity").addEventListener("input", updateInteraction);
+    
+    // Manejo del envío del formulario
+    document.getElementById("predictForm").addEventListener("submit", async function(event) {
+      event.preventDefault();
+      
+      const data = {
+        Country: document.getElementById("Country").value,
+        Year: parseInt(document.getElementById("Year").value),
+        Annual_Mean_NO2_Concentration: parseFloat(document.getElementById("Annual_Mean_NO2_Concentration").value),
+        life_expectancy: parseFloat(document.getElementById("life_expectancy").value),
+        Avg_Percentage_Activity: parseFloat(document.getElementById("Avg_Percentage_Activity").value),
+        Ratio_annual_of_inequality_income: parseFloat(document.getElementById("Ratio_annual_of_inequality_income").value),
+        percentage_of_overweight_BMI: parseFloat(document.getElementById("percentage_of_overweight_BMI").value),
+        sex_Males: parseInt(document.getElementById("sex_Males").value),
+        Interaction_LifeExpectancy_Activity: parseFloat(document.getElementById("Interaction_LifeExpectancy_Activity").value)
+      };
+      
+      try {
+        const response = await fetch("/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        const result = await response.json();
+        document.getElementById("result").innerText = "Predicción: " + result.Predicted_Dementia_Deaths + " muertes por demencia.";
+      } catch (error) {
+        document.getElementById("result").innerText = "Error al realizar la predicción.";
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
+

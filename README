@@ -1,0 +1,77 @@
+# API de Predicción de Muertes por Demencia
+
+Este repositorio contiene una API construida con **FastAPI** que predice el número de muertes por demencia en países europeos. La API integra tanto el **front-end** (una página HTML servida desde la carpeta `static`) como el **back-end** (endpoints para realizar predicciones).
+
+El modelo predictivo ha sido entrenado utilizando **XGBoost** y utiliza diversas variables de entrada para estimar el número de muertes por demencia.
+
+## Características
+
+- **Modelo Predictivo:** Utiliza variables como la concentración anual de NO2, esperanza de vida, actividad física, desigualdad de ingresos, porcentaje de sobrepeso, entre otras, para predecir las muertes por demencia.
+- **Front-end y Back-end Integrados:** Sirve una página HTML (front-end) y cuenta con endpoints para interactuar con el modelo (back-end).
+- **Despliegue con Docker:** Incluye un `Dockerfile` para facilitar la creación de un contenedor que empaquete toda la aplicación.
+- **Ejecución con Gunicorn:** Se proporciona la opción de ejecutar la aplicación en producción utilizando **Gunicorn** con workers de **Uvicorn**.
+
+## Estructura del Proyecto
+
+La estructura del repositorio es la siguiente:
+
+TFM/ ├── Dockerfile ├── requirements.txt ├── main.py ├── best_xgb_model.pkl ├── scaler.pkl └── static/ └── index.html
+
+
+## Requisitos
+
+- [Docker](https://docs.docker.com/get-docker/) instalado en tu sistema.
+- (Opcional) Python 3.9 o superior si deseas ejecutar la aplicación localmente sin Docker.
+- (Opcional) Gunicorn y Uvicorn para ejecución en producción sin Docker.
+
+## Inicialización del Repositorio
+
+1. **Clonar el repositorio:**
+
+   ```bash
+   git clone https://github.com/tu-usuario/tu-repositorio.git
+   cd tu-repositorio
+
+Instalar las dependencias (para ejecución local sin Docker):
+pip install -r requirements.txt
+
+
+Para construir y ejecutar la aplicación dentro de un contenedor Docker, sigue estos pasos:
+
+Construir la imagen Docker:
+docker build -t api-dementia .
+
+Ejecutar el coentenedor
+docker run -d -p 8000:8000 api-dementia
+
+La aplicación estará disponible en http://localhost:8000.
+
+Ejecución con Gunicorn
+Si prefieres ejecutar la aplicación en producción usando Gunicorn con workers de Uvicorn, sigue estos pasos:
+
+Instala Gunicorn y Uvicorn (si aún no lo tienes):
+
+pip install gunicorn uvicorn
+
+Ejecuta la aplicación con Gunicorn:
+
+gunicorn main:app -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000
+
+Con este comando, la aplicación se ejecutará en el puerto 8000 y estará disponible en http://localhost:8000.
+
+Descripción del Modelo
+El modelo predictivo está basado en XGBoost y utiliza las siguientes variables:
+
+Country: Nombre del país (informativo).
+Year: Año de la predicción.
+Annual_Mean_NO2_Concentration: Concentración anual media de NO2.
+life_expectancy: Esperanza de vida.
+Avg_Percentage_Activity: Promedio del porcentaje de actividad física.
+Ratio_annual_of_inequality_income: Relación anual de desigualdad de ingresos.
+percentage_of_overweight_BMI: Porcentaje de personas con sobrepeso (según BMI).
+sex_Males: Indicador binario para género (ej. 1 para hombres).
+Interaction_LifeExpectancy_Activity: Valor calculado como la interacción entre life_expectancy y Avg_Percentage_Activity (si no se proporciona, se calcula automáticamente).
+El modelo toma estas variables, las escala utilizando un escalador preentrenado (scaler.pkl), y realiza la predicción del número de muertes por demencia utilizando un modelo XGBoost (best_xgb_model.pkl).
+
+Contribuciones
+¡Las contribuciones son bienvenidas! Si deseas mejorar la aplicación, reporta problemas o sugiere cambios abriendo un issue o creando un pull request.
