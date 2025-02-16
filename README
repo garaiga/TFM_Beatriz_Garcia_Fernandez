@@ -8,7 +8,7 @@ Mi modelo, basado en **XGBoost**, utiliza diversas variables (como la concentrac
 
 - **Modelo Predictivo Inteligente:** Se vale de variables clave para hacer predicciones acertadas.
 - **Integración Front-end y Back-end:** Una interfaz web sencilla y endpoints listos para interactuar con el modelo.
-- **Despliegue Sencillo con Docker:** Un `Dockerfile` incluido te permite empaquetar y desplegar toda la aplicación sin complicaciones.
+- **Despliegue sencillo con Docker:** Un `Dockerfile` incluido te permite empaquetar y desplegar toda la aplicación sin complicaciones.
 - **Ejecución en Producción con Gunicorn:** Puedes optar por un despliegue en producción usando **Gunicorn** junto a **Uvicorn** para un rendimiento óptimo.
 
 
