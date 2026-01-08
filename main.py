@@ -99,3 +99,4 @@ def predict(input_data: PredictionInput):
 @app.get("/welcome")
 def welcome():
     return {"message": "Bienvenido a la API de Predicción de Muertes por Demencia"}
+#prueba
