@@ -100,3 +100,4 @@ def predict(input_data: PredictionInput):
 def welcome():
     return {"message": "Bienvenido a la API de Predicción de Muertes por Demencia"}
 #prueba 2
+#quiero hacer otro commit
